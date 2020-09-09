@@ -10,20 +10,11 @@ void leftRotatebyOne(char arr[], int n) {   // Shifts array
   arr[i] = temp; 
 }
 
-void leftRotate(char arr[], int shift, int n) { 
-  int i; 
-  for (i = 0; i < shift; i++)     // Determines how many shifts
-    leftRotatebyOne(arr, n); 
-}
-
 void createGrid(char input[], char grid[][BUFFER_SIZE], int n) {  // Populates 2D array
-  /* int i = 0; */
-  /* int shift = 1; */
   for (int j = 0;j < n;j++) {
     for (int k = 0;k < n;k++) {
       grid[j][(k-j+n)%n] = input[k];
     }
-    /* leftRotate(input, shift, n); */
   }
 }
 
@@ -34,21 +25,20 @@ void printArray(char arr[], int n) {
   printf("\n");
 }  
 
+void sortGrid(char arr[][BUFFER_SIZE], int n) { 
+  int i, j; 
+  char key[BUFFER_SIZE];
+  for (i = 1; i < n; i++) { 
+    strncpy(key, arr[i], n);
+    j = i - 1; 
 
-/* void sortGrid(char grid[][BUFFER_SIZE], int n) { */  
-/*   int i, key, j; */
-/* //  for (int m = 0;m < n;m++) { */
-/*     for (i = 0;i < n;i++) { */
-/*       key = grid[i][k]; */
-/*       j = i - 1; */
-/*       while (j >= 0 && grid[j][k] > key) { */
-/*         grid[j + 1][k] = grid[j][k]; */
-/*         j = j - 1; */
-/*       } */
-/*       grid[j + 1][k] = key; */
-/*     } */
-/* //  } */
-/* } */
+    while (j >= 0 && strncmp(arr[j], key, n) > 0) { 
+      strncpy(arr[j + 1], arr[j], n);
+      j = j - 1; 
+    } 
+    strncpy(arr[j + 1], key, n);
+  } 
+} 
 
 /* void makeClusters(char sortedGrid[][BUFFER_SIZE], int n) { */
 /*   int clusters[BUFFER_SIZE]; */
@@ -78,15 +68,11 @@ void printGrid(char grid[][BUFFER_SIZE], int n) {
 int main() {
   int n;
   char grid[BUFFER_SIZE][BUFFER_SIZE];
-  char input[BUFFER_SIZE] = {'a','b','c','d','\0'};
+  char input[BUFFER_SIZE] = {'y','e','t','i','\0'};
 
-  /* fgets(input, BUFFER_SIZE, stdin); */
   n = strlen(input);
 
   createGrid(input, grid, n);
+  sortGrid(grid, n);
   printGrid(grid, n);
-  /* int b; */
-  /* for (b = 0;b < n;b++) { */
-  /*   sortGrid(grid,n); */
-  /* } */
 }
