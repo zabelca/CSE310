@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define BUFFER_SIZE 256
+
 void leftRotatebyOne(char arr[], int n) {   // Shifts array
   int temp = arr[0], i; 
   for (i = 0; i < n - 1; i++) 
@@ -14,15 +16,14 @@ void leftRotate(char arr[], int shift, int n) {
     leftRotatebyOne(arr, n); 
 }
 
-void createGrid(char input[], char grid[][256], int n) {  // Populates 2D array
-  int i = 0;
-  int k;
-  int shift = 1;
+void createGrid(char input[], char grid[][BUFFER_SIZE], int n) {  // Populates 2D array
+  /* int i = 0; */
+  /* int shift = 1; */
   for (int j = 0;j < n;j++) {
-    for (k = 0;k < n;k++) {
-      grid[j][k] = input[i++];
+    for (int k = 0;k < n;k++) {
+      grid[j][(k-j+n)%n] = input[k];
     }
-    leftRotate(input, shift, n);
+    /* leftRotate(input, shift, n); */
   }
 }
 
@@ -34,7 +35,7 @@ void printArray(char arr[], int n) {
 }  
 
 
-/* void sortGrid(char grid[][256], int n) { */  
+/* void sortGrid(char grid[][BUFFER_SIZE], int n) { */  
 /*   int i, key, j; */
 /* //  for (int m = 0;m < n;m++) { */
 /*     for (i = 0;i < n;i++) { */
@@ -49,8 +50,8 @@ void printArray(char arr[], int n) {
 /* //  } */
 /* } */
 
-/* void makeClusters(char sortedGrid[][256], int n) { */
-/*   int clusters[256]; */
+/* void makeClusters(char sortedGrid[][BUFFER_SIZE], int n) { */
+/*   int clusters[BUFFER_SIZE]; */
 /*   int j, i; */
 /*   for (j = 0;j < n;j++) { */
 /*     if (sortedGrid[j][n-1] == sortedGrid[j + 1][n - 1]) { */
@@ -60,11 +61,11 @@ void printArray(char arr[], int n) {
 /*   } */
 /* } */
 
-void printClusters(char sortedGrid[][256]) {
+void printClusters(char sortedGrid[][BUFFER_SIZE]) {
   
 }
 
-void printGrid(char grid[][256], int n) {
+void printGrid(char grid[][BUFFER_SIZE], int n) {
   int j, k;
   for(j=0;j<n;j++) {
     for(k=0;k<n;k++) {
@@ -76,13 +77,13 @@ void printGrid(char grid[][256], int n) {
 
 int main() {
   int n;
-  char grid[256][256];
-  char arr[256];
+  char grid[BUFFER_SIZE][BUFFER_SIZE];
+  char input[BUFFER_SIZE] = {'a','b','c','d','\0'};
 
-  fgets(arr, 256, stdin);
-  n = strlen(arr);
+  /* fgets(input, BUFFER_SIZE, stdin); */
+  n = strlen(input);
 
-  createGrid(arr, grid, n);
+  createGrid(input, grid, n);
   printGrid(grid, n);
   /* int b; */
   /* for (b = 0;b < n;b++) { */
