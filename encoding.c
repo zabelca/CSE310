@@ -40,6 +40,22 @@ void sortGrid(char arr[][BUFFER_SIZE], int n) {
   } 
 } 
 
+// TODO: finish implementing this function - DONE
+int findInput(char input[BUFFER_SIZE], char grid[][BUFFER_SIZE], int n) {
+  int pos;
+  // loop through grid
+  for (int i = 0;i < n;i++) {
+    pos = strncmp(grid[i], input, n);
+  // strncmp 
+    // if found, return i
+    if (pos == 0) {
+      return i;
+    } else {
+    }
+  }
+  return -1;
+}
+
 /* void makeClusters(char sortedGrid[][BUFFER_SIZE], int n) { */
 /*   int clusters[BUFFER_SIZE]; */
 /*   int j, i; */
@@ -74,5 +90,13 @@ int main() {
 
   createGrid(input, grid, n);
   sortGrid(grid, n);
-  printGrid(grid, n);
+  int newPosition = findInput(input, grid, n);
+  printf("%d", newPosition);
+  printf("\n");
+//  makeClusters(grid, n);
+//  printClusters(grid);
 }
+
+/* Mississippi */
+/* 0 */
+/* 1 i 1 p 2 s 1 M 1 p 1 i 2 s 2 i */
