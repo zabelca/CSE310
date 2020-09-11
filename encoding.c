@@ -3,6 +3,11 @@
 
 #define BUFFER_SIZE 256
 
+typedef struct {
+  char letter;
+  int count;
+} lettercount;
+
 void leftRotatebyOne(char arr[], int n) {   // Shifts array
   int temp = arr[0], i; 
   for (i = 0; i < n - 1; i++) 
@@ -40,35 +45,37 @@ void sortGrid(char arr[][BUFFER_SIZE], int n) {
   } 
 } 
 
-// TODO: finish implementing this function - DONE
 int findInput(char input[BUFFER_SIZE], char grid[][BUFFER_SIZE], int n) {
-  int pos;
-  // loop through grid
   for (int i = 0;i < n;i++) {
-    pos = strncmp(grid[i], input, n);
-  // strncmp 
-    // if found, return i
+    int pos = strncmp(grid[i], input, n);
     if (pos == 0) {
       return i;
-    } else {
     }
   }
   return -1;
 }
 
-/* void makeClusters(char sortedGrid[][BUFFER_SIZE], int n) { */
-/*   int clusters[BUFFER_SIZE]; */
-/*   int j, i; */
-/*   for (j = 0;j < n;j++) { */
-/*     if (sortedGrid[j][n-1] == sortedGrid[j + 1][n - 1]) { */
-      
-/*     clusters[i] = sortedGrid[j][n-1]; */
-/*     i++; */
-/*   } */
-/* } */
+void makeCluster(char grid[][BUFFER_SIZE], lettercount cluster[BUFFER_SIZE], int n) {
+  char lastKnownChar = 0;
+  int clusterIndex = -1;
 
-void printClusters(char sortedGrid[][BUFFER_SIZE]) {
-  
+  for (int i = 0; i < n; i++) {
+    if (lastKnownChar == 0 || lastKnownChar != grid[i][n - 1]) {
+      clusterIndex++;
+      lastKnownChar = grid[i][n - 1];
+      cluster[clusterIndex].letter = lastKnownChar;
+      cluster[clusterIndex].count = 1;
+    } else {
+      cluster[clusterIndex].count++;
+    }
+  }
+}
+
+void printCluster(lettercount cluster[BUFFER_SIZE], int n) {
+  for (int i = 0; cluster[i].letter != 0; i++) {
+    printf("%d%c", cluster[i].count, cluster[i].letter);
+  }
+  printf("\n");
 }
 
 void printGrid(char grid[][BUFFER_SIZE], int n) {
@@ -81,20 +88,31 @@ void printGrid(char grid[][BUFFER_SIZE], int n) {
   }
 }   
 
-int main() {
-  int n;
-  char grid[BUFFER_SIZE][BUFFER_SIZE];
-  char input[BUFFER_SIZE] = {'y','e','t','i','\0'};
+char *replaceChar(char *str, char find, char replace) {
+  char *currentPos = strchr(str, find);
+  while (currentPos) {
+    *currentPos = replace;
+    currentPos = strchr(currentPos, find);
+  }
+  return str;
+}
 
-  n = strlen(input);
+int main(int argc, char **argv) {
+  char grid[BUFFER_SIZE][BUFFER_SIZE];
+  char input[BUFFER_SIZE];
+  lettercount cluster[BUFFER_SIZE];
+
+  fgets(input, BUFFER_SIZE, stdin);
+  replaceChar(input, '\n', '\0');
+  int n = strlen(input);
 
   createGrid(input, grid, n);
   sortGrid(grid, n);
   int newPosition = findInput(input, grid, n);
-  printf("%d", newPosition);
-  printf("\n");
-//  makeClusters(grid, n);
-//  printClusters(grid);
+  makeCluster(grid, cluster, n);
+
+  printf("%d\n", newPosition);
+  printCluster(cluster, n);
 }
 
 /* Mississippi */
