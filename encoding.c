@@ -207,9 +207,10 @@ int main(int argc, char **argv) {
       
       if (0 == strcmp(argv[1], "insertion")) {
         doInsertion(line, nread);
-      }
-      if (0 == strcmp(argv[1], "quick")) {
+      } else if (0 == strcmp(argv[1], "quick")) {
         doQuick(line, nread);
+      } else {
+        printf("Invalid Argument");
       }
     } else {
       printf("\n\n");
@@ -221,11 +222,11 @@ int main(int argc, char **argv) {
 
 
 /*
- * 1. Quick sort - written out but not working - 
+ * 1. Quick sort - written out but not working - DONE
  * 2. Accept and check command line parameters - DONE
  * 3. Multi-line file - DONE - DONE even better 
  * 4. Empty line in the file - DONE 
- * 5. Make dynamic - 
+ * 5. Make dynamic - DONE
  * 6. Makefile - 
  *
  * 0
