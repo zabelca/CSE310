@@ -9,14 +9,6 @@ typedef struct {
   int count;
 } lettercount;
 
-int getIndex(char *line, size_t nread) {
-  int index;
-  for (int i = 0; i < nread; i++) {
-    line[i] = index;
-  }
-  return index;
-}
-
 void insertionSort(char *grid[], int n) { 
   int i, j; 
   char key;
@@ -32,31 +24,61 @@ void insertionSort(char *grid[], int n) {
   } 
 }
 
+void quickSort(char *grid[],int first,int last) {
+  int i, j, pivot;
+  char temp;
+
+  if (first < last) {
+    pivot = first;
+    i = first;
+    j = last;
+
+    while (i < j) {
+      while (grid[i][0] <= grid[pivot][0] && i < last)
+        i++;
+      while (grid[j][0] > grid[pivot][0])
+        j--;
+      if (i < j) {
+        temp = grid[i][0];
+        grid[i][0] = grid[j][0];
+        grid[j][0] = temp;
+      }
+    }
+
+    temp = grid[pivot][0];
+    grid[pivot][0] = grid[j][0];
+    grid[j][0] = temp;
+    quickSort(grid, first, j - 1);
+    quickSort(grid, j + 1, last);
+  }
+}
+
 int getOriginalStringSize(char *line) {
   int count = 0;
-  while (*line) {
-    int digits = atoi(line);
-    count += digits;
-    line += (digits / 10) + 1;
-  }
+  do {
+    if (*line != ' ') {
+      int digits = atoi(line);
+      count += digits;
+      line += (digits / 10);
+    }
+  } while (*line++ && *line++); // advance `line` two characters, checking each for '\0'
   return count;
 }
 
 void createCluster(char *line, lettercount cluster[], int gridSize) {
-  bool parseChar = 1;
+  bool parseNumber = true;
   int i = 0;
-  while (*line) {
-    if (parseChar) {
+  do {
+    if (parseNumber) {
       int digits = atoi(line);
       cluster[i].count = digits;
-      line += (digits / 10) + 1;
+      line += (digits / 10);
     } else {
       cluster[i].letter = *line;
-      line++;
       i++;
     }
-    parseChar = !parseChar;
-  }
+    parseNumber = !parseNumber;
+  } while (*line++ && *line++); // advance `line` two characters, checking each for '\0'
 }
 
 void createGrid(lettercount clusters[], char *grid[], int size) {
@@ -72,11 +94,11 @@ void createGrid(lettercount clusters[], char *grid[], int size) {
     cluster++;
   }
 
-  insertionSort(grid, size);
+//  insertionSort(grid, size);
 
-  for (int a=0; a<size; a++) {
-    printf("%c %c\n", grid[a][0], grid[a][size-1]);
-  }
+ // for (int a=0; a<size; a++) {
+ //   printf("%c %c\n", grid[a][0], grid[a][size-1]);
+ // }
 }
 
 int findNext(char *grid[], int gridSize, int i) {
@@ -100,7 +122,7 @@ void getOriginalString(int index, char *grid[], int gridSize, char *original, in
     original[m] = grid[index][0];
     index = next[index];
   }
-  original[origStringSize] = '\0';
+  original[origStringSize - 1] = '\0';
 }
 
 
@@ -110,6 +132,13 @@ void printGrid(char *grid[], int n) {
     printf("%s\n", grid[j]); // printing 2D array
   }
 }   
+
+void printCluster(lettercount cluster[], int n) {
+  for (int i = 0; cluster[i].letter != 0; i++) {
+    printf("%d%c", cluster[i].count, cluster[i].letter);
+  }
+  printf("\n");
+}
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -121,31 +150,59 @@ int main(int argc, char **argv) {
   size_t len = 0;
   size_t nread;
   int index = 0;
-  bool parseIndex = 1;
+  bool parseIndex = true;
          
   while ((nread = getline(&line, &len, stdin)) != -1) {
-    if (parseIndex) {
-      index = atoi(line);
+    if (0 == strcmp(argv[1], "insertion")) {
+      if (parseIndex) {
+        index = atoi(line);
+      } else {
+        int size = getOriginalStringSize(line);
+        lettercount clusters[size];
+        createCluster(line, clusters, size);
+        //printCluster(clusters, size);
+        char *grid[size];
+        for (int i = 0; i < size; i++) {
+          grid[i] = malloc(size);
+          memset(grid[i], 0, sizeof(char) * (size));
+        }
+        //printf("%p\n", grid[1]);
+        createGrid(clusters, grid, size);
+        insertionSort(grid, size);
+        char origString[size+1];
+        getOriginalString(index, grid, size, origString, size+1);
+        printf("%s\n", origString);
+        for (int i = 0; i < size; i++) {
+          free(grid[i]);
+        }
+      }
+      parseIndex = !parseIndex;
+    } else if (0 == strcmp(argv[1], "quick")) {
+      if (parseIndex) {
+        index = atoi(line);
+      } else {
+        int size = getOriginalStringSize(line);
+        lettercount clusters[size];
+        createCluster(line, clusters, size);
+        char *grid[size];
+        for (int i = 0; i < size; i++) {
+          grid[i] = malloc(size);
+          memset(grid[i], 0, sizeof(char) * (size));
+        }
+        //printf("%p\n", grid[1]);
+        createGrid(clusters, grid, size);
+        quickSort(grid, 0, size-1);
+        char origString[size+1];
+        getOriginalString(index, grid, size, origString, size+1);
+        printf("%s\n", origString);
+        for (int i = 0; i < size; i++) {
+          free(grid[i]);
+        }
+      }
+      parseIndex = !parseIndex;
     } else {
-      int size = getOriginalStringSize(line);
-      lettercount clusters[size];
-      memset(clusters, 0, sizeof(lettercount) * size);
-      createCluster(line, clusters, size);
-      char *grid[size];
-      for (int i = 0; i < size; i++) {
-        grid[i] = malloc(size);
-        memset(grid[i], 0, sizeof(char) * (size));
-      }
-      //printf("%p\n", grid[1]);
-      createGrid(clusters, grid, size);
-      char origString[size+1];
-      getOriginalString(index, grid, size, origString, size+1);
-      printf("%s\n", origString);
-      for (int i = 0; i < size; i++) {
-        free(grid[i]);
-      }
+      printf("Invalid Argument");
     }
-    parseIndex = !parseIndex;
   }
   free(line);
 }

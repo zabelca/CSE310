@@ -47,12 +47,12 @@ void quickSort(char *sortedGrid[], int first, int last) {
     i = first;
     j = last;
 
-    while (strcmp(sortedGrid[i], sortedGrid[j]) > 0) {
-      while (strcmp(sortedGrid[i], sortedGrid[pivot]) >= 0 && i < last)
+    while (i < j) {
+      while (strcmp(sortedGrid[i], sortedGrid[pivot]) <= 0 && i < last)
         i++;
       while (strcmp(sortedGrid[j], sortedGrid[pivot]) > 0)
         j--;
-      if (strcmp(sortedGrid[i], sortedGrid[j]) > 0) {
+      if (i < j) {
         temp = sortedGrid[i];
         sortedGrid[i] = sortedGrid[j];
         sortedGrid[j] = temp;
@@ -96,7 +96,7 @@ void makeCluster(char *grid[], int n) {
     }
   }
   for (int m = 0; m < n && cluster[m].letter != 0; m++) {
-    printf("%d%c", cluster[m].count, cluster[m].letter);
+    printf("%d %c ", cluster[m].count, cluster[m].letter);
   }
   printf("\n");
 }
